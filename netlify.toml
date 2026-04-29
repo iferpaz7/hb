@@ -1,0 +1,13 @@
+[build]
+  command   = "npm run build"
+  publish   = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Redirect everything to index.html for SPA-style fallback (not needed
+# for pure static but prevents Netlify's own 404 on direct URL access)
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200

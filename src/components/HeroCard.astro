@@ -1,0 +1,102 @@
+---
+interface Props {
+  age: string;
+  name: string;
+  wish: string;
+}
+const { age, name, wish } = Astro.props;
+---
+
+<section class="hero flex flex-col items-center text-center gap-0 w-full px-4">
+
+  <!-- Big number — mobile-safe size -->
+  <div class="big-num select-none leading-none"
+       style="font-family: var(--font-display); font-weight:900; letter-spacing:-2px">
+    {age}
+  </div>
+
+  <!-- Happy Birthday line -->
+  <div class="flex items-center gap-3 mt-3 w-full max-w-xs sm:max-w-sm justify-center"
+       style="animation: slideUp .8s .3s cubic-bezier(.34,1.56,.64,1) both">
+    <span class="flex-1 h-px max-w-[60px]"
+          style="background: linear-gradient(90deg, transparent, var(--color-gold))"></span>
+    <span class="tracking-[.35em] sm:tracking-[.45em] uppercase text-[11px] sm:text-xs font-light whitespace-nowrap"
+          style="font-family: var(--font-body); color: var(--color-gold)">
+      Happy Birthday
+    </span>
+    <span class="flex-1 h-px max-w-[60px]"
+          style="background: linear-gradient(90deg, var(--color-gold), transparent)"></span>
+  </div>
+
+  <!-- Name -->
+  <h1 class="mt-1 italic font-normal"
+      style="font-family: var(--font-display);
+             font-size: clamp(38px, 11vw, 96px);
+             color: var(--color-cream);
+             text-shadow: 0 0 60px #ff4f7b66, 0 2px 30px #c084fc44;
+             letter-spacing: 1px;
+             animation: slideUp .8s .5s cubic-bezier(.34,1.56,.64,1) both">
+    {name}
+  </h1>
+
+  <!-- Wish — readable on all screen sizes -->
+  <p class="mt-4 max-w-[280px] sm:max-w-sm leading-relaxed text-center"
+     style="font-family: var(--font-body);
+            font-size: clamp(14px, 3.5vw, 17px);
+            color: rgba(255,248,240,.55);
+            letter-spacing:.08em;
+            animation: slideUp .8s .7s cubic-bezier(.34,1.56,.64,1) both">
+    {wish}
+  </p>
+
+  <!-- Badge -->
+  <div class="flex gap-2 sm:gap-3 mt-6"
+       style="animation: slideUp .8s .9s cubic-bezier(.34,1.56,.64,1) both">
+    {['🎂','🥂','🌸','🎁','💫'].map((e, i) => (
+      <span class="text-2xl sm:text-3xl md:text-4xl"
+            style={`animation: bounce 2.2s ease-in-out ${i * 0.15}s infinite`}>
+        {e}
+      </span>
+    ))}
+  </div>
+
+</section>
+
+<style>
+  .big-num {
+    /* Smaller on mobile, bigger on desktop */
+    font-size: clamp(72px, 20vw, 160px);
+    background: linear-gradient(135deg,
+      var(--color-gold)  0%,
+      var(--color-rose)  40%,
+      var(--color-lilac) 80%,
+      var(--color-sky)   100%
+    );
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 30px #ff4f7b55) drop-shadow(0 0 60px #c084fc33);
+    animation:
+      numPop  0.9s cubic-bezier(0.34, 1.56, 0.64, 1) both,
+      shimmer 4s  linear 1s infinite;
+  }
+
+  @keyframes numPop {
+    0%   { opacity: 0; transform: scale(0.5) rotate(-6deg); }
+    100% { opacity: 1; transform: scale(1)   rotate(0deg); }
+  }
+  @keyframes shimmer {
+    0%   { background-position: 0%   50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0%   50%; }
+  }
+  @keyframes slideUp {
+    0%   { opacity: 0; transform: translateY(24px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-6px); }
+  }
+</style>

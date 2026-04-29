@@ -1,0 +1,54 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+}
+const { title } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- mobile-first viewport, prevents zoom on input focus -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0d0812" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <!-- Disable browser scroll restoration BEFORE anything renders.
+         Must be inline in <head> so it runs before the browser
+         tries to restore the previous scroll position. -->
+    <script is:inline>
+      if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+      }
+      // Belt-and-suspenders: also force top on every load
+      window.scrollTo(0, 0);
+    </script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Cormorant+Garamond:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-dark text-cream min-h-screen overflow-x-hidden">
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  /* Only hide cursor on devices that actually have one */
+  @media (pointer: fine) {
+    body { cursor: none; }
+  }
+
+  /* Safe area padding for notched phones */
+  body {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Smooth scroll */
+  html { scroll-behavior: smooth; }
+</style>

@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+@theme {
+  --color-rose:  #ff4f7b;
+  --color-gold:  #f7c948;
+  --color-lilac: #c084fc;
+  --color-sky:   #60d4f7;
+  --color-cream: #fff8f0;
+  --color-dark:  #0d0812;
+
+  --font-display: 'Playfair Display', serif;
+  --font-body:    'Cormorant Garamond', serif;
+}

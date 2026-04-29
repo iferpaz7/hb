@@ -1,0 +1,55 @@
+---
+---
+
+<div class="aurora">
+  <div class="b3"></div>
+</div>
+
+<style>
+  .aurora {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .aurora::before,
+  .aurora::after,
+  .aurora .b3 {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.35;
+    animation: drift 12s ease-in-out infinite alternate;
+  }
+
+  .aurora::before {
+    width: 70vw; height: 60vh;
+    top: -15%; left: -10%;
+    background: radial-gradient(circle, #ff4f7b88, #c084fc44);
+    animation-duration: 14s;
+  }
+
+  .aurora::after {
+    width: 60vw; height: 55vh;
+    bottom: -10%; right: -10%;
+    background: radial-gradient(circle, #60d4f766, #f7c94844);
+    animation-duration: 10s;
+    animation-delay: -5s;
+  }
+
+  .aurora .b3 {
+    width: 50vw; height: 50vh;
+    top: 30%; left: 30%;
+    background: radial-gradient(circle, #c084fc55, #ff4f7b33);
+    animation-duration: 16s;
+    animation-delay: -8s;
+  }
+
+  @keyframes drift {
+    0%   { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(6%, 4%) scale(1.12); }
+  }
+</style>

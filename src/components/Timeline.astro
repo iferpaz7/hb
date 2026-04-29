@@ -1,0 +1,292 @@
+---
+interface Milestone {
+  year: number;
+  age: number;
+  emoji: string;
+  title: string;
+  desc: string;
+  subtitle?: string;
+  footer?: string;
+  accent?: 'gold' | 'rose' | 'lilac';
+}
+
+const milestones: Milestone[] = [
+  // Add your milestones here
+  // Example:
+  // { year: 2023, age: 21, emoji: "🎂", title: "Example Title", desc: "Example description", accent: 'gold' },
+];
+---
+
+<!-- Section title -->
+<div class="text-center py-10 relative z-10">
+  <p class="tracking-[.4em] uppercase text-xs"
+     style="font-family: var(--font-body); color: var(--color-gold)">
+    ✨ [Edad] años de historia ✨
+  </p>
+</div>
+
+<!-- Cinematic timeline: each item is a full-screen snap section -->
+<div id="tl-container" class="relative">
+
+  {milestones.map((m, i) => {
+    const isLast = i === milestones.length - 1;
+    const accent = m.accent ?? 'gold';
+    const accentColor = accent === 'lilac'
+      ? 'var(--color-lilac)'
+      : accent === 'rose'
+        ? 'var(--color-rose)'
+        : 'var(--color-gold)';
+    const accentBorder = accent === 'lilac'
+      ? 'rgba(192,132,252,.22)'
+      : accent === 'rose'
+        ? 'rgba(255,79,123,.22)'
+        : 'rgba(247,201,72,.15)';
+    const accentGlow = accent === 'lilac' ? 'rgba(192,132,252,.1)' : accent === 'rose' ? 'rgba(255,79,123,.1)' : 'rgba(247,201,72,.08)';
+    return (
+      <div
+        class="tl-slide relative flex items-center justify-center min-h-screen px-6"
+        data-index={i}
+      >
+        <!-- Progress bar (left edge) — sticky, not fixed, works on mobile -->
+        <div class="absolute left-0 top-0 bottom-0 w-1 pointer-events-none"
+             style="background: rgba(247,201,72,.08)">
+          <div
+            class="w-full transition-all duration-700"
+            style={`height: ${((i + 1) / milestones.length) * 100}%; background: linear-gradient(to bottom, var(--color-gold), var(--color-rose))`}
+          ></div>
+        </div>
+
+        <!-- Card — mobile-safe padding -->
+        <div
+          class={`tl-card max-w-lg w-full rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 relative overflow-hidden
+                  ${isLast ? 'last-card' : ''}`}
+          style={`background: rgba(255,248,240,.04);
+                 border: 1px solid ${accentBorder};
+                 backdrop-filter: blur(20px);`}
+        >
+          <!-- Glow blob behind card -->
+          <div class="absolute -inset-px rounded-3xl pointer-events-none"
+               style={`background: radial-gradient(ellipse at 50% 0%, ${isLast ? '#ff4f7b18' : accentGlow}, transparent 70%)`}>
+          </div>
+
+          <!-- Year badge -->
+          <div class="inline-flex items-center gap-2 mb-6">
+            <span class="text-4xl">{m.emoji}</span>
+            <div>
+              <span class="block text-2xl font-black"
+                    style={`font-family: var(--font-display); color: ${accentColor}`}>
+                {m.year}
+              </span>
+              <span class="text-xs tracking-widest"
+                    style="color: rgba(255,248,240,.35); font-family: var(--font-body)">
+                {m.subtitle ?? (m.age === 0 ? 'recién nacida' : `${m.age} años`)}
+              </span>
+            </div>
+          </div>
+
+          <!-- Title -->
+          <h3 class="text-xl sm:text-2xl md:text-3xl font-bold mb-3 leading-tight"
+              style="font-family: var(--font-display); color: var(--color-cream)">
+            {m.title}
+          </h3>
+
+          <!-- Desc -->
+          <p class="text-base leading-relaxed"
+             style="font-family: var(--font-body); color: rgba(255,248,240,.6); letter-spacing:.04em">
+            {m.desc}
+          </p>
+
+          <!-- Progress dots -->
+          <div class="flex gap-1.5 mt-8 flex-wrap">
+            {milestones.map((_, j) => (
+              <div
+                class={`tl-dot h-1.5 rounded-full transition-all duration-500 ${j === i ? 'w-6' : 'w-1.5'}`}
+                style={j <= i
+                  ? `background: var(--color-gold); opacity: ${j === i ? 1 : 0.4}`
+                  : 'background: rgba(255,248,240,.15)'}
+              ></div>
+            ))}
+          </div>
+
+          <!-- Nav hint -->
+          <div class="mt-6 flex items-center justify-between">
+            <span class="text-xs" style="color: rgba(255,248,240,.25); font-family: var(--font-body)">
+              {i + 1} / {milestones.length}
+            </span>
+            {!isLast && (
+              <span class="scroll-hint text-xs flex items-center gap-1"
+                    style={`color: ${accent === 'lilac' ? 'rgba(192,132,252,.65)' : 'rgba(247,201,72,.55)'}; font-family: var(--font-body)`}>
+                scroll ↓
+              </span>
+            )}
+            {isLast && (
+              <span class="text-xs"
+                    style={`color: ${accent === 'lilac' ? 'var(--color-lilac)' : 'var(--color-rose)'}; font-family: var(--font-body)`}>
+                {m.footer ?? '🎉 ¡Feliz cumpleaños!'}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  })}
+</div>
+
+<style>
+  /* Each slide starts invisible and scaled down */
+  .tl-slide .tl-card {
+    opacity: 0;
+    transform: scale(0.9) translateY(32px);
+    transition:
+      opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.8s ease;
+  }
+
+  /* Active slide zooms in */
+  .tl-slide.active .tl-card {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    box-shadow: 0 0 40px rgba(247,201,72,.08), 0 8px 32px rgba(0,0,0,.4);
+  }
+
+  /* Passed slides shrink back slightly */
+  .tl-slide.passed .tl-card {
+    opacity: 0.3;
+    transform: scale(0.93) translateY(-16px);
+    transition:
+      opacity 0.5s ease,
+      transform 0.5s ease;
+  }
+
+  /* Scroll hint bounce */
+  .scroll-hint {
+    animation: hintBounce 1.6s ease-in-out infinite;
+  }
+
+  @keyframes hintBounce {
+    0%, 100% { transform: translateY(0);   opacity: .5; }
+    50%       { transform: translateY(4px); opacity: 1; }
+  }
+
+  /* Last card special glow */
+  .last-card {
+    border-color: rgba(255, 79, 123, .35) !important;
+    box-shadow: 0 0 60px rgba(255, 79, 123, .2), 0 0 120px rgba(192, 132, 252, .1);
+  }
+
+  .tl-slide.active .last-card {
+    animation: lastPulse 2.5s ease-in-out infinite;
+  }
+
+  @keyframes lastPulse {
+    0%, 100% { box-shadow: 0 0 40px rgba(255,79,123,.2), 0 0 80px rgba(192,132,252,.1); }
+    50%       { box-shadow: 0 0 80px rgba(255,79,123,.45), 0 0 160px rgba(192,132,252,.2); }
+  }
+</style>
+
+<script>
+  const slides = Array.from(document.querySelectorAll<HTMLElement>('.tl-slide'));
+  let current = -1;
+  let autoScrollTimer: ReturnType<typeof setTimeout> | null = null;
+  let autoScrollActive = false;
+
+  // ── Reset all slides to initial hidden state on load ─────────
+  slides.forEach(s => s.classList.remove('active', 'passed'));
+
+  // ── Activate a slide ──────────────────────────────────────────
+  function activate(index: number) {
+    if (index === current) return;
+
+    slides.forEach((s, i) => {
+      s.classList.remove('active', 'passed');
+      if (i < index)  s.classList.add('passed');
+      if (i === index) s.classList.add('active');
+    });
+
+    current = index;
+  }
+
+  // ── Scroll to a slide ─────────────────────────────────────────
+  function scrollTo(index: number) {
+    if (index < 0 || index >= slides.length) return;
+    activate(index);
+    slides[index].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  // ── Auto-scroll cinematic sequence ───────────────────────────
+  function startAutoScroll() {
+    if (autoScrollActive) return;
+    autoScrollActive = true;
+
+    let i = 0;
+    function step() {
+      if (!autoScrollActive || i >= slides.length) {
+        autoScrollActive = false;
+        return;
+      }
+      scrollTo(i);
+      i++;
+      // Pause longer on last slide
+      const delay = i === slides.length ? 9000 : 7000;
+      autoScrollTimer = setTimeout(step, delay);
+    }
+
+    // Small initial delay so the page has settled
+    autoScrollTimer = setTimeout(step, 1200);
+  }
+
+  function stopAutoScroll() {
+    autoScrollActive = false;
+    if (autoScrollTimer) clearTimeout(autoScrollTimer);
+  }
+
+  // ── IntersectionObserver — activates cards as they enter view ─
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const idx = Number((entry.target as HTMLElement).dataset.index);
+          // Only activate via observer when NOT in auto-scroll mode
+          // (auto-scroll handles its own activation)
+          if (!autoScrollActive) activate(idx);
+        }
+      });
+    },
+    { threshold: 0.55 }
+  );
+
+  slides.forEach((s) => observer.observe(s));
+
+  // ── Stop auto-scroll on manual user interaction ───────────────
+  let scrollTimeout: ReturnType<typeof setTimeout>;
+  window.addEventListener('wheel',      () => { stopAutoScroll(); }, { passive: true });
+  window.addEventListener('touchmove',  () => { stopAutoScroll(); }, { passive: true });
+  window.addEventListener('keydown',    (e) => {
+    if (['ArrowDown','ArrowUp','PageDown','PageUp'].includes(e.key)) stopAutoScroll();
+  });
+
+  // ── Keyboard navigation (after auto-scroll) ───────────────────
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+      e.preventDefault();
+      scrollTo(current + 1);
+    }
+    if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+      e.preventDefault();
+      scrollTo(current - 1);
+    }
+  });
+
+  // ── Auto-scroll starts automatically after hero is shown ─────
+  // 8s = hero animations (~1s) + time to read hero (~7s)
+  setTimeout(() => {
+    const tlContainer = document.getElementById('tl-container');
+    if (tlContainer) {
+      // Scroll to timeline section first
+      tlContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Then begin per-slide autoscroll once scroll settles
+      setTimeout(startAutoScroll, 1600);
+    }
+  }, 8000);
+</script>

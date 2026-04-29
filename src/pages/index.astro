@@ -1,0 +1,62 @@
+---
+import BaseLayout     from '../layouts/BaseLayout.astro';
+import Aurora         from '../components/Aurora.astro';
+import Cursor         from '../components/Cursor.astro';
+import Confetti       from '../components/Confetti.astro';
+import FloatingHearts from '../components/FloatingHearts.astro';
+import HeroCard       from '../components/HeroCard.astro';
+import AudioPlayer    from '../components/AudioPlayer.astro';
+import Timeline       from '../components/Timeline.astro';
+
+const name = "[Tu Nombre]";
+const age  = "[Tu Edad]";
+const wish = "[Tu Deseo]";
+---
+
+<BaseLayout title={`Happy Birthday ${name} 🎂`}>
+
+  <!-- Background layers -->
+  <Cursor />
+  <Aurora />
+  <Confetti />
+  <FloatingHearts />
+
+  <!-- Hero section — full viewport -->
+  <section class="relative z-10 min-h-screen flex flex-col items-center justify-center px-5 pt-12 pb-16 gap-10">
+    <HeroCard {age} {name} {wish} />
+  </section>
+
+  <!-- Divider -->
+  <div class="relative z-10 flex items-center gap-4 px-8 max-w-2xl mx-auto"
+       style="animation: fadeIn 1s 1.5s both">
+    <div class="flex-1 h-px" style="background: linear-gradient(90deg, transparent, rgba(247,201,72,.3))"></div>
+    <span class="text-xs tracking-widest uppercase px-2"
+          style="color: rgba(247,201,72,.5); font-family: var(--font-body)">
+      [Tu Edad] años
+    </span>
+    <div class="flex-1 h-px" style="background: linear-gradient(90deg, rgba(247,201,72,.3), transparent)"></div>
+  </div>
+
+  <!-- Timeline section -->
+  <section class="relative z-10 pb-24">
+    <Timeline />
+  </section>
+
+  <!-- Audio background player -->
+  <AudioPlayer />
+
+  <!-- Footer tag — hidden on mobile to avoid overlap with audio pill -->
+  <footer class="hidden sm:block fixed bottom-6 right-7 z-20 text-xs tracking-widest uppercase"
+          style="color: rgba(255,248,240,.2); font-family: var(--font-body);
+                 animation: fadeIn 1.5s 1.5s both">
+    Con cariño 💛
+  </footer>
+
+</BaseLayout>
+
+<style>
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+</style>

@@ -1,0 +1,53 @@
+---
+---
+
+<div class="hearts" id="hearts"></div>
+
+<style>
+  .hearts {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  :global(.heart) {
+    position: absolute;
+    font-size: clamp(12px, 2vw, 22px);
+    opacity: 0;
+    animation: floatUp linear infinite;
+  }
+
+  @keyframes floatUp {
+    0%   { opacity: 0; transform: translateY(0) rotate(0deg) scale(0.6); }
+    10%  { opacity: 0.7; }
+    90%  { opacity: 0.4; }
+    100% { opacity: 0; transform: translateY(-100vh) rotate(360deg) scale(1.2); }
+  }
+</style>
+
+<script>
+  const container = document.getElementById('hearts')!;
+  const EMOJIS    = ['💜', '🌸', '✨', '💛', '🩷', '⭐', '💖'];
+
+  function spawnHeart() {
+    const el  = document.createElement('span');
+    el.className   = 'heart';
+    el.textContent = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
+
+    const dur  = Math.random() * 8 + 7;
+    const left = Math.random() * 100;
+
+    el.style.left             = `${left}%`;
+    el.style.bottom           = '-40px';
+    el.style.animationDuration = `${dur}s`;
+    el.style.animationDelay   = `${Math.random() * 4}s`;
+
+    container.appendChild(el);
+    setTimeout(() => el.remove(), (dur + 4) * 1000);
+  }
+
+  // initial hearts
+  for (let i = 0; i < 12; i++) spawnHeart();
+  setInterval(spawnHeart, 700);
+</script>

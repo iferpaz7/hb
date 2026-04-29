@@ -1,0 +1,34 @@
+---
+---
+
+<div class="cursor" id="cursor"></div>
+
+<style>
+  .cursor {
+    position: fixed;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--color-gold);
+    pointer-events: none;
+    z-index: 9999;
+    mix-blend-mode: screen;
+    transform: translate(-50%, -50%);
+    transition: transform 0.15s ease, opacity 0.3s;
+    /* Only show on pointer devices (mouse/trackpad), not touch */
+    display: none;
+  }
+
+  @media (pointer: fine) {
+    .cursor { display: block; }
+  }
+</style>
+
+<script>
+  const cursor = document.getElementById('cursor') as HTMLDivElement;
+
+  document.addEventListener('mousemove', (e) => {
+    cursor.style.left = `${e.clientX}px`;
+    cursor.style.top  = `${e.clientY}px`;
+  });
+</script>

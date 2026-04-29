@@ -1,0 +1,118 @@
+---
+---
+
+<audio id="bg-audio" loop preload="auto" autoplay muted>
+  <source src="/audio/happy-birthday-dj-bobo.mp3" type="audio/mpeg" />
+</audio>
+
+<!-- Pill: pulsa para escuchar — desaparece al activarse -->
+<button
+  id="audio-pill"
+  aria-label="Reproducir música"
+  class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50
+         flex items-center gap-3 px-5 py-3 rounded-full
+         cursor-pointer select-none border-0 outline-none
+         transition-all duration-300"
+  style="background: rgba(13,8,18,.8);
+         border: 1px solid rgba(247,201,72,.35);
+         backdrop-filter: blur(16px);
+         box-shadow: 0 0 24px rgba(247,201,72,.15);
+         animation: pillIn .6s 1.8s both"
+>
+  <!-- Pulsing ring to draw attention -->
+  <span class="relative flex h-3 w-3">
+    <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-60"
+          style="background: var(--color-gold)"></span>
+    <span class="relative inline-flex rounded-full h-3 w-3"
+          style="background: var(--color-gold)"></span>
+  </span>
+  <span id="pill-text"
+        class="text-xs tracking-widest uppercase font-medium"
+        style="font-family: var(--font-body); color: rgba(255,248,240,.85); letter-spacing:.2em">
+    🔇 Activar sonido
+  </span>
+</button>
+
+<!-- Playing indicator (hidden until audio starts) -->
+<div
+  id="audio-playing"
+  class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50
+         flex items-center gap-2 px-4 py-2 rounded-full
+         cursor-pointer select-none"
+  style="background: rgba(13,8,18,.7);
+         border: 1px solid rgba(247,201,72,.15);
+         backdrop-filter: blur(16px);
+         display: none !important"
+>
+  <div id="bars" class="flex items-end gap-[3px] h-4">
+    <span class="bar-line w-[3px] rounded-full" style="background:var(--color-gold)"></span>
+    <span class="bar-line w-[3px] rounded-full" style="background:var(--color-rose)"></span>
+    <span class="bar-line w-[3px] rounded-full" style="background:var(--color-gold)"></span>
+    <span class="bar-line w-[3px] rounded-full" style="background:var(--color-lilac)"></span>
+  </div>
+  <span id="vol-icon" class="text-sm select-none">🔊</span>
+</div>
+
+<style>
+  .bar-line { height: 3px; }
+  #audio-playing.active .bar-line {
+    animation: eq .7s ease-in-out infinite alternate;
+  }
+  #audio-playing.active .bar-line:nth-child(1) { animation-duration: .55s; }
+  #audio-playing.active .bar-line:nth-child(2) { animation-duration: .38s; animation-delay: .1s; }
+  #audio-playing.active .bar-line:nth-child(3) { animation-duration: .65s; animation-delay: .05s; }
+  #audio-playing.active .bar-line:nth-child(4) { animation-duration: .48s; animation-delay: .15s; }
+
+  @keyframes eq {
+    0%   { height: 3px; }
+    100% { height: 14px; }
+  }
+  @keyframes pillIn {
+    from { opacity:0; transform: translateX(-50%) translateY(14px) scale(.95); }
+    to   { opacity:1; transform: translateX(-50%) translateY(0)    scale(1); }
+  }
+</style>
+
+<script>
+  const audio      = document.getElementById('bg-audio')      as HTMLAudioElement;
+  const pill       = document.getElementById('audio-pill')!;
+  const indicator  = document.getElementById('audio-playing')!;
+  const volIcon    = document.getElementById('vol-icon')!;
+  const bars       = document.getElementById('bars')!;
+
+  let started = false;
+  let muted   = false;
+
+  function showIndicator() {
+    pill.style.display = 'none';
+    indicator.style.removeProperty('display'); // remove the !important none
+    indicator.style.display = 'flex';
+    indicator.classList.add('active');
+  }
+
+  function startAudio() {
+    if (started) return;
+    // Audio is already playing (muted via autoplay attr)
+    // Just unmute it — no play() call needed, avoids browser autoplay block
+    audio.volume = 1;
+    audio.muted  = false;
+    // If for some reason it hasn't started yet, try playing
+    if (audio.paused) {
+      audio.play().catch(() => {});
+    }
+    started = true;
+    showIndicator();
+  }
+
+  // ── Pill click unmutes the audio (user gesture required to unmute) ──
+  pill.addEventListener('click', startAudio);
+
+  // ── Indicator click = mute / unmute ──────────────────────────
+  indicator.addEventListener('click', () => {
+    muted = !muted;
+    audio.muted    = muted;
+    volIcon.textContent = muted ? '🔇' : '🔊';
+    if (muted) indicator.classList.remove('active');
+    else       indicator.classList.add('active');
+  });
+</script>
